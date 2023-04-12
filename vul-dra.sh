@@ -1,5 +1,14 @@
 #!/bin/sh
-verse_range=$(printf "%s" "$3" | grep -oE "[0-9]+-[0-9]+")
+# Checks if user input uses verse(s) or not
+if [ ! -n "$3" ];then
+	verse_range=$(curl -s "https://www.biblegateway.com/passage/?search=$1+$2&version=VULGATE")
+	verse_range=$(printf "%s" "$verse_range" | sed -n 's/.*<div class="passage-table" data-osis="\(.*\)".*/\1/p')
+	prefix=$(printf "%s" "$verse_range" | sed -n 's/^\([^\.]*\)\..*/\1/p')
+	verse_range=$(printf "%s" "$verse_range" | sed 's/'$prefix'\.'$2'\.\(.\+\)-'$prefix'\.'$2'\.\(.\+\)/\1-\2/')
+else
+	verse_range=$(printf "%s" "$3" | grep -oE "[0-9]+-[0-9]+")
+fi
+
 if [ -n "$verse_range" ]; then
 	number1=$(printf "%s" "$verse_range" | cut -d'-' -f1)
 	number2=$(printf "%s" "$verse_range" | cut -d'-' -f2)
