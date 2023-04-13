@@ -1,10 +1,10 @@
 #!/bin/sh
 # Checks if user input uses verse(s) or not
-if [ ! -n "$3" ];then
+if [ -z "$3" ];then
 	verse_range=$(curl -s "https://www.biblegateway.com/passage/?search=$1+$2&version=VULGATE")
 	verse_range=$(printf "%s" "$verse_range" | sed -n 's/.*<div class="passage-table" data-osis="\(.*\)".*/\1/p')
 	prefix=$(printf "%s" "$verse_range" | sed -n 's/^\([^\.]*\)\..*/\1/p')
-	verse_range=$(printf "%s" "$verse_range" | sed 's/'$prefix'\.'$2'\.\(.\+\)-'$prefix'\.'$2'\.\(.\+\)/\1-\2/')
+	verse_range=$(printf "%s" "$verse_range" | sed 's/'"$prefix"'\.'"$2"'\.\(.\+\)-'"$prefix"'\.'"$2"'\.\(.\+\)/\1-\2/')
 else
 	verse_range=$(printf "%s" "$3" | grep -oE "[0-9]+-[0-9]+")
 fi
@@ -34,8 +34,8 @@ scraping_block(){
 display(){
   	printf "%-50s%s\n" "LATIN VULGATE" "DOUAY RHEIMS"
   	printf "%-50s%s\n" "-------------" "---------------------------"
-	VULGATE_DISPLAY=$(printf "$VULGATE" | fmt -w 50)
-	DRA_DISPLAY=$(printf "$DRA" | fmt -w 50)
+	VULGATE_DISPLAY=$(printf "%s" "$VULGATE" | fmt -w 50)
+	DRA_DISPLAY=$(printf "%s" "$DRA" | fmt -w 50)
 	
 	mkfifo vulgate_pipe dra_pipe
 	printf '%s\n' "$VULGATE_DISPLAY" > vulgate_pipe &
@@ -46,6 +46,7 @@ display(){
 }
 
 range_count=$((number2 - number1))
+printf "%s" "Requesting..."
 if [ $range_count -ge 5 ]; then
 	version="VULGATE"
 	VULGATE=$(scraping_block "$1" "$2" "$version")
@@ -55,4 +56,5 @@ else
 	VULGATE=$(request_and_parse "$1" "$2" "$3" "VULGATE")
 	DRA=$(request_and_parse "$1" "$2" "$3" "DRA")
 fi
+clear
 display
