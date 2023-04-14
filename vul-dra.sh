@@ -1,4 +1,16 @@
 #!/bin/sh
+# Help menu
+if [ "$1" = "-h" -o "$1" = "--help" ]; then
+	echo "usage: ./$(basename "$0") John 3
+	./$(basename "$0") John 3 16
+	./$(basename "$0") John 3 16-21
+	For books of the bible that has a numbering before it, e.g 1 Peter
+	./$(basename "$0") 1Peter 1
+	./$(basename "$0") 1Corinthians 1 5
+	./$(basename "$0") 1Thessalonians 1 1-10"
+	exit 1
+fi
+
 # Checks if user input uses verse(s) or not
 if [ -z "$3" ];then
 	verse_range=$(curl -s "https://www.biblegateway.com/passage/?search=$1+$2&version=VULGATE")
