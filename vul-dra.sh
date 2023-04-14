@@ -43,6 +43,7 @@ scraping_block(){
 	printf "%s\n" "$verse_result"
 }
 
+# Output side by side
 display(){
   	printf "%-50s%s\n" "LATIN VULGATE" "DOUAY RHEIMS"
   	printf "%-50s%s\n" "-------------" "---------------------------"
