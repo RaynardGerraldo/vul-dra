@@ -47,8 +47,8 @@ scraping_block(){
 display(){
   	printf "%-50s%s\n" "LATIN VULGATE" "DOUAY RHEIMS"
   	printf "%-50s%s\n" "-------------" "---------------------------"
-	VULGATE_DISPLAY=$(printf "%s" "$VULGATE" | fmt -w 50)
-	DRA_DISPLAY=$(printf "%s" "$DRA" | fmt -w 50)
+	VULGATE_DISPLAY=$(printf "%s" "$VULGATE" | sed "s/&amp;#39;/'/g" | fmt -w 50)
+	DRA_DISPLAY=$(printf "%s" "$DRA" | sed "s/&amp;#39;/'/g" | fmt -w 50)
 	
 	mkfifo vulgate_pipe dra_pipe
 	printf '%s\n' "$VULGATE_DISPLAY" > vulgate_pipe &
